@@ -1,37 +1,53 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
 import axiosInstance from "../axiosConfig";
 import { InvestmentType } from "./InvestmentTypes";
 
-type NewInvestmentType = Omit<InvestmentType, "_id">;
+type NewType = Omit<InvestmentType, "_id">;
+
+const Schema = z.object({
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(20, "Name must be at most 20 characters"),
+});
 
 export function NewInvestmentType() {
-  const [name, setName] = useState("");
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<NewType>({
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    resolver: zodResolver(Schema),
+    defaultValues: { name: "" },
+    mode: "onBlur",
+  });
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (newInvestmentType: NewInvestmentType) =>
+    mutationFn: (newInvestmentType: NewType) =>
       axiosInstance.post("/api/investment-type", newInvestmentType),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: "investment-types" });
+      await queryClient.invalidateQueries({ queryKey: ["investment-types"] });
+      reset();
     },
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    mutation.mutate({ name });
-    setName("");
+  const onSubmit: SubmitHandler<NewType> = (data) => {
+    mutation.mutate(data);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    <form onSubmit={handleSubmit(onSubmit)}>
       <label>
         Investment Type Name:
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+        <input {...register("name")} />
+        {errors.name && <span>{errors.name.message}</span>}
       </label>
       <button type="submit">Add InvestmentType</button>
     </form>
