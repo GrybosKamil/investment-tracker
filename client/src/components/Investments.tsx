@@ -1,12 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "../axiosConfig";
+import { NewInvestment } from "./NewInvestment";
 
-interface Investment {
+export type Investment = {
   _id: number;
   type: string;
   value: number;
   date: string;
-}
+};
 
 const fetchInvestments = async (): Promise<Investment[]> => {
   const { data } = await axiosInstance.get<Investment[]>("/api/investment");
@@ -30,6 +31,7 @@ export function Investments() {
   return (
     <div>
       <h2>Investments</h2>
+      <NewInvestment />
       <ul>
         {data.map(({ _id, type, value, date }: Investment) => (
           <li key={_id}>
