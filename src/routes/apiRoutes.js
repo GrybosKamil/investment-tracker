@@ -5,6 +5,6 @@ import { investmentTypeRoutes } from "./investmentTypeRoutes.js";
 const router = express.Router();
 
 router.use("/investment", investmentRoutes);
-router.use("/investmentType", investmentTypeRoutes);
+router.use("/investment-type", investmentTypeRoutes);
 
 export const apiRoutes = router;
