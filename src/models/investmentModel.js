@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 
 const investmentSchema = new mongoose.Schema({
-  name: {
-    type: String,
+  type: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "InvestmentType",
     required: true,
   },
   value: {

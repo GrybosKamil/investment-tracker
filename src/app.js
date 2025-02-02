@@ -9,7 +9,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use("/api/investments", investmentRoutes);
+app.use("/api", investmentRoutes);
 
 mongoose
   .connect(process.env.MONGODB_URI, {
