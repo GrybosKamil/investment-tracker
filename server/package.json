@@ -1,7 +1,6 @@
 {
-  "name": "investment-tracker",
+  "name": "investment-tracker-server",
   "version": "0.0.0",
-  "type": "module",
   "main": "src/app.js",
   "scripts": {
     "start": "node src/app.js",
