@@ -5,9 +5,8 @@
     "install": "npm run install:client && npm run install:server",
     "install:client": "cd client && npm i",
     "install:server": "cd server && npm i",
-    "build": "npm run build:client && npm run build:server",
+    "build": "npm run build:client",
     "build:client": "cd client && npm run build",
-    "build:server": "cd server && npm run build",
     "start": "cd server && npm run start"
   }
 }
