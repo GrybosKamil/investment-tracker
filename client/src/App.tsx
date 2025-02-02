@@ -1,5 +1,21 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { InvestmentTypes } from "./components/InvestmentTypes";
+import { Investments } from "./components/Investments";
+
+const queryClient = new QueryClient();
 
 export default function App() {
-  return <div>App</div>;
+  return (
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <div>
+          <h1>Investment Tracker</h1>
+          <InvestmentTypes />
+          <Investments />
+        </div>
+      </QueryClientProvider>
+    </ErrorBoundary>
+  );
 }
