@@ -49,7 +49,9 @@ export function NewInvestmentType() {
         <input {...register("name")} />
         {errors.name && <span>{errors.name.message}</span>}
       </label>
-      <button type="submit">Add InvestmentType</button>
+      <button type="submit" disabled={Object.keys(errors).length > 0}>
+        Add InvestmentType
+      </button>
     </form>
   );
 }
