@@ -21,7 +21,6 @@ export function NewInvestmentType() {
     reset,
     formState: { errors },
   } = useForm<NewType>({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
     resolver: zodResolver(Schema),
     defaultValues: { name: "" },
     mode: "onBlur",
@@ -42,7 +41,6 @@ export function NewInvestmentType() {
   };
 
   return (
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     <form onSubmit={handleSubmit(onSubmit)}>
       <label>
         Investment Type Name:

@@ -35,7 +35,9 @@ export default tseslint.config(
           ignoreRestSiblings: true,
         },
       ],
-      // "@typescript-eslint/no-misused-promises": "off"
+      "@typescript-eslint/no-misused-promises": "off",
+      "@typescript-eslint/no-unsafe-call": "off",
+      "@typescript-eslint/no-unsafe-assigment": "off",
     },
   },
   {
