@@ -10,9 +10,8 @@ export function NewInvestmentType() {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (newInvestmentType: NewInvestmentType) => {
-      return axiosInstance.post("/api/investment-type", newInvestmentType);
-    },
+    mutationFn: (newInvestmentType: NewInvestmentType) =>
+      axiosInstance.post("/api/investment-type", newInvestmentType),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: "investment-types" });
     },
