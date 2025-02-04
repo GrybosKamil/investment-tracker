@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import axiosInstance from "../axiosConfig";
 import { NewInvestment } from "./NewInvestment";
+import { InvestmentType } from "./InvestmentTypes";
 
 export type Investment = {
   _id: string;
@@ -44,6 +45,17 @@ export function Investments() {
     setConfirmDeleteId(null);
   };
 
+  const investmentTypes: InvestmentType[] | undefined =
+    queryClient.getQueryData(["investment-types"]);
+  console.log({ investmentTypes });
+
+  const getInvestmentTypeName = (typeId: string) => {
+    const type = investmentTypes?.find(
+      (type: InvestmentType) => type._id === typeId
+    );
+    return type ? type.name : "Unknown";
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -59,7 +71,7 @@ export function Investments() {
       <ul>
         {data.map(({ _id, type, value, date }: Investment) => (
           <li key={_id}>
-            {type}: {value} on {date}
+            {getInvestmentTypeName(type)}: {value} on {date}
             {confirmDeleteId === _id ? (
               <>
                 <button onClick={() => handleConfirmDelete(_id)}>
