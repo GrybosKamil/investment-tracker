@@ -4,7 +4,7 @@ import axiosInstance from "../axiosConfig";
 import { NewInvestment } from "./NewInvestment";
 
 export type Investment = {
-  _id: number;
+  _id: string;
   type: string;
   value: number;
   date: string;
@@ -23,15 +23,15 @@ export function Investments() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => axiosInstance.delete(`/api/investment/${id}`),
+    mutationFn: (id: string) => axiosInstance.delete(`/api/investment/${id}`),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["investments"] });
     },
   });
 
-  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = (id: string) => {
     setConfirmDeleteId(id);
   };
 
@@ -39,7 +39,7 @@ export function Investments() {
     setConfirmDeleteId(null);
   };
 
-  const handleConfirmDelete = (id: number) => {
+  const handleConfirmDelete = (id: string) => {
     deleteMutation.mutate(id);
     setConfirmDeleteId(null);
   };
