@@ -25,7 +25,7 @@ export function InvestmentTypes() {
     mutationFn: (id: string) =>
       axiosInstance.delete(`/api/investment-type/${id}`),
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["investmentTypes"] });
+      await queryClient.invalidateQueries({ queryKey: ["investment-types"] });
       await queryClient.invalidateQueries({ queryKey: ["investments"] });
     },
   });
