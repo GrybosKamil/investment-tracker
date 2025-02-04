@@ -43,3 +43,17 @@ export const addInvestmentType = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+export const deleteInvestment = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedInvestment = await Investment.findByIdAndDelete(id);
+    if (!deletedInvestment) {
+      return res.status(404).json({ message: "Investment not found" });
+    }
+    res.status(200).json({ message: "Investment deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
