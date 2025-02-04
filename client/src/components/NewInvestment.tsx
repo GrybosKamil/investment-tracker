@@ -21,7 +21,7 @@ export function NewInvestment() {
     queryKey: ["investment-types"],
     queryFn: async () => {
       const { data } = await axiosInstance.get<InvestmentType[]>(
-        "/api/investment-type"
+        "/api/investment-type",
       );
       return data;
     },

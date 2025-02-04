@@ -47,11 +47,10 @@ export function Investments() {
 
   const investmentTypes: InvestmentType[] | undefined =
     queryClient.getQueryData(["investment-types"]);
-  console.log({ investmentTypes });
 
   const getInvestmentTypeName = (typeId: string) => {
     const type = investmentTypes?.find(
-      (type: InvestmentType) => type._id === typeId
+      (type: InvestmentType) => type._id === typeId,
     );
     return type ? type.name : "Unknown";
   };
