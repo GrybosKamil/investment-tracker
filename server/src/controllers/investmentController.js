@@ -3,7 +3,7 @@ import InvestmentType from "../models/investmentTypeModel.js";
 
 export const getInvestments = async (req, res) => {
   try {
-    const investments = await Investment.find();
+    const investments = await Investment.find().sort({ date: -1 });
     res.status(200).json(investments);
   } catch (error) {
     res.status(500).json({ message: error.message });

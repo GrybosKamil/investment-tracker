@@ -21,7 +21,7 @@ export function NewInvestment() {
     queryKey: ["investment-types"],
     queryFn: async () => {
       const { data } = await axiosInstance.get<InvestmentType[]>(
-        "/api/investment-type",
+        "/api/investment-type"
       );
       return data;
     },
@@ -44,7 +44,7 @@ export function NewInvestment() {
     mode: "onBlur",
     defaultValues: {
       type: "",
-      date: new Date().toISOString().split("T")[0],
+      date: new Date().toISOString().slice(0, 16),
       value: 0,
     },
   });
@@ -69,7 +69,7 @@ export function NewInvestment() {
       </div>
       <div>
         <label>Date</label>
-        <input type="date" {...register("date")} />
+        <input type="datetime-local" {...register("date")} />
         {errors.date && <p>{errors.date.message}</p>}
       </div>
       <div>
