@@ -3,6 +3,7 @@ import { useState } from "react";
 import axiosInstance from "../axiosConfig";
 import { NewInvestment } from "./NewInvestment";
 import { InvestmentType } from "./InvestmentTypes";
+import { InvestmentChart } from "./InvestmentChart";
 
 export type Investment = {
   _id: string;
@@ -67,6 +68,7 @@ export function Investments() {
     <div>
       <h2>Investments</h2>
       <NewInvestment />
+      <InvestmentChart investments={data} investmentTypes={investmentTypes} />
       <ul>
         {data.map(({ _id, type, value, date }: Investment) => (
           <li key={_id}>
