@@ -45,12 +45,12 @@ export function Investments() {
     setConfirmDeleteId(null);
   };
 
-  const investmentTypes: InvestmentType[] | undefined =
-    queryClient.getQueryData(["investment-types"]);
+  const investmentTypes: InvestmentType[] =
+    queryClient.getQueryData(["investment-types"]) || [];
 
   const getInvestmentTypeName = (typeId: string) => {
     const type = investmentTypes?.find(
-      (type: InvestmentType) => type._id === typeId,
+      (type: InvestmentType) => type._id === typeId
     );
     return type ? type.name : "Unknown";
   };
