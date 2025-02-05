@@ -44,7 +44,7 @@ export function NewInvestment() {
     mode: "onBlur",
     defaultValues: {
       type: "",
-      date: new Date().toISOString().slice(0, 16),
+      date: new Date().toISOString().slice(0, 10),
       value: 0,
     },
   });
@@ -66,10 +66,10 @@ export function NewInvestment() {
           ))}
         </select>
         {errors.type && <p>{errors.type.message}</p>}
-      </div>
+      </div> 
       <div>
         <label>Date</label>
-        <input type="datetime-local" {...register("date")} />
+        <input type="date" {...register("date")} />
         {errors.date && <p>{errors.date.message}</p>}
       </div>
       <div>
