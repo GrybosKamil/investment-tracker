@@ -74,7 +74,7 @@ export function NewInvestment() {
       </div>
       <div>
         <label>Value</label>
-        <input type="number" {...register("value", { valueAsNumber: true })} />
+        <input type="number" step="0.01" {...register("value", { valueAsNumber: true })} />
         {errors.value && <p>{errors.value.message}</p>}
       </div>
       <button type="submit" disabled={Object.keys(errors).length > 0}>
