@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -21,6 +21,11 @@ export function InvestmentChart({
 }) {
   const [selectedTypes, setSelectedTypes] =
     useState<InvestmentType[]>(investmentTypes);
+
+  useEffect(() => {
+    console.log({ investmentTypes });
+    setSelectedTypes(investmentTypes);
+  }, [investmentTypes]);
 
   const handleTypeChange = (type: InvestmentType) => {
     setSelectedTypes((prevSelectedTypes) =>

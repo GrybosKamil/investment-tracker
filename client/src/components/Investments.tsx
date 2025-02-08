@@ -12,16 +12,14 @@ export type Investment = {
   date: string;
 };
 
-const fetchInvestments = async (): Promise<Investment[]> => {
-  const { data } = await axiosInstance.get<Investment[]>("/api/investment");
-  return data;
-};
-
 export function Investments() {
   const queryClient = useQueryClient();
   const { data, error, isLoading } = useQuery<Investment[], Error>({
     queryKey: ["investments"],
-    queryFn: fetchInvestments,
+    queryFn: async (): Promise<Investment[]> => {
+      const { data } = await axiosInstance.get<Investment[]>("/api/investment");
+      return data;
+    },
   });
 
   const deleteMutation = useMutation({

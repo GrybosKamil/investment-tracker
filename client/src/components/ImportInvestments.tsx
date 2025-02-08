@@ -1,8 +1,10 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import axiosInstance from "../axiosConfig";
 
 export function ImportInvestments() {
-  const [file, setFile] = useState<File|null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const queryClient = useQueryClient();
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFile(event.target.files ? event.target.files[0] : null);
@@ -29,6 +31,9 @@ export function ImportInvestments() {
         }
       );
       console.log("File uploaded successfully", response.data);
+
+      await queryClient.invalidateQueries({ queryKey: ["investment-types"] });
+      await queryClient.invalidateQueries({ queryKey: ["investments"] });
     } catch (error) {
       console.error("Error uploading file", error);
     }
