@@ -104,7 +104,6 @@ export const importInvestments = async (req, res) => {
     });
 
     const updates = await prepareUpdates(results);
-    console.log({ updates });
     await applyUpdates(updates);
 
     res.json({ message: "File processed successfully", data: results });
