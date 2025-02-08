@@ -37,9 +37,21 @@ const startServer = async () => {
       useUnifiedTopology: true,
     });
 
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
       console.log(`Server is running on port ${port}`);
     });
+
+    const gracefulShutdown = async () => {
+      console.log("Shutting down gracefully...");
+      await mongoose.connection.close();
+      server.close(() => {
+        console.log("Closed out remaining connections.");
+        process.exit(0);
+      });
+    };
+
+    process.on("SIGTERM", gracefulShutdown);
+    process.on("SIGINT", gracefulShutdown);
   } catch (error) {
     console.error("Error connecting to MongoDB", error);
   }

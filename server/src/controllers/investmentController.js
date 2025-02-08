@@ -1,6 +1,6 @@
 import csv from "csv-parser";
-import { Readable } from "stream";
 import multer from "multer";
+import { Readable } from "stream";
 
 import Investment from "../models/investmentModel.js";
 import InvestmentType from "../models/investmentTypeModel.js";
@@ -103,7 +103,10 @@ export const importInvestments = async (req, res) => {
         .on("error", reject);
     });
 
-    console.log(results);
+    const updates = await prepareUpdates(results);
+    console.log({ updates });
+    await applyUpdates(updates);
+
     res.json({ message: "File processed successfully", data: results });
   } catch (error) {
     console.error("Error processing file:", error);
@@ -111,4 +114,59 @@ export const importInvestments = async (req, res) => {
       .status(500)
       .json({ message: "Error processing file", error: error.message });
   }
+};
+
+const prepareUpdates = async (results) => {
+  const updates = [];
+  const investmentTypes = await InvestmentType.find({});
+  const investmentTypeMap = {};
+
+  investmentTypes.forEach((type) => {
+    investmentTypeMap[type.name] = type._id;
+  });
+
+  for (const result of results) {
+    const { date, ...investmentData } = result;
+
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+      console.error("Invalid date format:", result.date);
+      continue;
+    }
+
+    for (const investmentName of Object.keys(investmentData)) {
+      const valueOfInvestment = investmentData[investmentName];
+      if (valueOfInvestment === "" || isNaN(valueOfInvestment)) {
+        continue;
+      }
+
+      let investmentTypeId = investmentTypeMap[investmentName];
+      if (!investmentTypeId) {
+        const newInvestmentType = new InvestmentType({ name: investmentName });
+        await newInvestmentType.save();
+        investmentTypeId = newInvestmentType._id;
+        investmentTypeMap[investmentName] = investmentTypeId;
+      }
+
+      updates.push({
+        date: parsedDate,
+        type: investmentTypeId,
+        value: Number(valueOfInvestment),
+      });
+    }
+  }
+
+  return updates;
+};
+
+const applyUpdates = async (updates) => {
+  const bulkOps = updates.map((update) => ({
+    updateOne: {
+      filter: { date: update.date, type: update.type },
+      update: { $set: { value: update.value } },
+      upsert: true,
+    },
+  }));
+
+  await Investment.bulkWrite(bulkOps);
 };
