@@ -1,3 +1,7 @@
+import csv from "csv-parser";
+import { Readable } from "stream";
+import multer from "multer";
+
 import Investment from "../models/investmentModel.js";
 import InvestmentType from "../models/investmentTypeModel.js";
 
@@ -76,5 +80,35 @@ export const deleteInvestmentType = async (req, res) => {
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+const upload = multer();
+export const singleFileUpload = upload.single("file");
+
+export const importInvestments = async (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+  const results = [];
+
+  const stream = Readable.from(req.file.buffer);
+
+  try {
+    await new Promise((resolve, reject) => {
+      stream
+        .pipe(csv())
+        .on("data", (data) => results.push(data))
+        .on("end", resolve)
+        .on("error", reject);
+    });
+
+    console.log(results);
+    res.json({ message: "File processed successfully", data: results });
+  } catch (error) {
+    console.error("Error processing file:", error);
+    res
+      .status(500)
+      .json({ message: "Error processing file", error: error.message });
   }
 };
