@@ -9,8 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Investment } from "./Investments";
-import { InvestmentType } from "./InvestmentTypes";
+import { Investment, InvestmentType } from "./types";
 
 export function InvestmentChart({
   investments,
@@ -39,7 +38,7 @@ export function InvestmentChart({
   return (
     <div>
       <div>
-        <h3>Filter Investment Types</h3>
+        <h5>Filter Investment Types</h5>
         {investmentTypes.map((type) => (
           <label key={type._id}>
             <input
@@ -107,7 +106,7 @@ function prepareChartData(investments: Investment[]): ChartDataElement[] {
   const result: {
     [key: number]: ChartDataElement;
   } = {};
-  
+
   investments.forEach((investment) => {
     const date = investment.date.getTime();
     if (!result[date]) {

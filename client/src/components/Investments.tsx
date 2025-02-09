@@ -1,40 +1,18 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import axiosInstance from "../axiosConfig";
-import { NewInvestment } from "./NewInvestment";
-import { InvestmentType } from "./InvestmentTypes";
+import { ImportInvestments } from "./ImportInvestments";
 import { InvestmentChart } from "./InvestmentChart";
-
-export type Investment = {
-  _id: string;
-  type: string;
-  value: number;
-  date: Date;
-};
+import { InvestmentTypes } from "./InvestmentTypes";
+import { NewInvestment } from "./NewInvestment";
+import { Investment, InvestmentType } from "./types";
+import { useInvestments, useMutateInvestments } from "./useInvestments";
 
 export function Investments() {
-  const queryClient = useQueryClient();
-
   const [showList, setShowList] = useState<boolean>(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
-  const { data, error, isLoading } = useQuery<Investment[], Error>({
-    queryKey: ["investments"],
-    queryFn: async (): Promise<Investment[]> => {
-      const { data } = await axiosInstance.get<Investment[]>("/api/investment");
-      return data.map((investment) => ({
-        ...investment,
-        date: new Date(investment.date),
-      }));
-    },
-  });
+  const { deleteMutation } = useMutateInvestments();
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) => axiosInstance.delete(`/api/investment/${id}`),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["investments"] });
-    },
-  });
+  const { isLoading, isError, data } = useInvestments();
 
   const handleDeleteClick = (id: string) => {
     setConfirmDeleteId(id);
@@ -49,37 +27,53 @@ export function Investments() {
     setConfirmDeleteId(null);
   };
 
-  const investmentTypes: InvestmentType[] =
-    queryClient.getQueryData(["investment-types"]) || [];
-
-  const getInvestmentTypeName = (typeId: string) => {
+  function getInvestmentTypeName(
+    investmentTypes: InvestmentType[],
+    typeId: string
+  ): string {
     const type = investmentTypes?.find(
       (type: InvestmentType) => type._id === typeId
     );
     return type ? type.name : "Unknown";
-  };
+  }
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
-  if (error || !data) {
+  if (isError || !data.investments || !data.investmentTypes) {
     return <div>Error</div>;
   }
 
+  const investments: Investment[] = data.investments;
+  const investmentTypes: InvestmentType[] = data.investmentTypes;
+
   return (
     <div>
+      <InvestmentChart
+        investments={investments}
+        investmentTypes={investmentTypes}
+      />
+
+      <InvestmentTypes investmentTypes={investmentTypes} />
+
       <h2>Investments</h2>
-      <NewInvestment />
-      <InvestmentChart investments={data} investmentTypes={investmentTypes} />
+      <NewInvestment investmentTypes={investmentTypes} />
+
+      <h2>Import Investments</h2>
+      <ImportInvestments />
+
+      <h2>Investment List</h2>
       <button onClick={() => setShowList(!showList)}>
         {showList ? "Hide Investments" : "Show Investments"}
       </button>
+
       {showList && (
         <ul>
-          {data.map(({ _id, type, value, date }: Investment) => (
+          {investments.map(({ _id, type, value, date }: Investment) => (
             <li key={_id}>
-              {getInvestmentTypeName(type)}: {value} on {date.toISOString()}
+              {getInvestmentTypeName(investmentTypes, type)}: {value} on
+              {date.toISOString()}
               {confirmDeleteId === _id ? (
                 <>
                   <button onClick={() => handleConfirmDelete(_id)}>

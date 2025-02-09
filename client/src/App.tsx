@@ -1,8 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { ImportInvestments } from "./components/ImportInvestments";
-import { InvestmentTypes } from "./components/InvestmentTypes";
 import { Investments } from "./components/Investments";
 
 const queryClient = new QueryClient();
@@ -13,8 +11,6 @@ export default function App() {
       <QueryClientProvider client={queryClient}>
         <div>
           <h1>Investment Tracker</h1>
-          <ImportInvestments />
-          <InvestmentTypes />
           <Investments />
         </div>
       </QueryClientProvider>

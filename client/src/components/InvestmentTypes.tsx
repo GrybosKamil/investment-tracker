@@ -1,44 +1,27 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import axiosInstance from "../axiosConfig";
-import { Investment } from "./Investments";
 import { NewInvestmentType } from "./NewInvestmentType";
+import { Investment, InvestmentType } from "./types";
+import { useMutateInvestments } from "./useInvestments";
 
-export type InvestmentType = {
-  _id: string;
-  name: string;
-};
-
-export function InvestmentTypes() {
+export function InvestmentTypes({
+  investmentTypes,
+}: {
+  investmentTypes: InvestmentType[];
+}) {
   const queryClient = useQueryClient();
-  const { data, error, isLoading } = useQuery<InvestmentType[], Error>({
-    queryKey: ["investment-types"],
-    queryFn: async () => {
-      const { data } = await axiosInstance.get<InvestmentType[]>(
-        "/api/investment-type",
-      );
-      return data;
-    },
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: (id: string) =>
-      axiosInstance.delete(`/api/investment-type/${id}`),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["investment-types"] });
-      await queryClient.invalidateQueries({ queryKey: ["investments"] });
-    },
-  });
 
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [relatedInvestmentsCount, setRelatedInvestmentsCount] =
     useState<number>(0);
 
+  const { deleteTypeMutation } = useMutateInvestments();
+
   const handleDeleteClick = (id: string) => {
     const investments = queryClient.getQueryData<Investment[]>(["investments"]);
     if (investments) {
       const count = investments.filter(
-        (investment: Investment) => investment.type === id,
+        (investment: Investment) => investment.type === id
       ).length;
       setRelatedInvestmentsCount(count);
     }
@@ -46,7 +29,7 @@ export function InvestmentTypes() {
   };
 
   const handleConfirmDelete = (id: string) => {
-    deleteMutation.mutate(id);
+    deleteTypeMutation.mutate(id);
     setConfirmDeleteId(null);
   };
 
@@ -54,20 +37,12 @@ export function InvestmentTypes() {
     setConfirmDeleteId(null);
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error || !data) {
-    return <div>Error</div>;
-  }
-
   return (
     <div>
       <h2>Investment Types</h2>
       <NewInvestmentType />
       <ul>
-        {data.map(({ _id, name }: InvestmentType) => (
+        {investmentTypes.map(({ _id, name }: InvestmentType) => (
           <li key={_id}>
             {name}
             {confirmDeleteId === _id ? (
