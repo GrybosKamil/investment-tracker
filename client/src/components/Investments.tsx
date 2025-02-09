@@ -29,10 +29,10 @@ export function Investments() {
 
   function getInvestmentTypeName(
     investmentTypes: InvestmentType[],
-    typeId: string,
+    typeId: string
   ): string {
     const type = investmentTypes?.find(
-      (type: InvestmentType) => type._id === typeId,
+      (type: InvestmentType) => type._id === typeId
     );
     return type ? type.name : "Unknown";
   }
@@ -72,8 +72,7 @@ export function Investments() {
         <ul>
           {investments.map(({ _id, type, value, date }: Investment) => (
             <li key={_id}>
-              {getInvestmentTypeName(investmentTypes, type)}: {value} on
-              {date.toISOString()}
+              {`${getInvestmentTypeName(investmentTypes, type)}: ${value} on ${date.toISOString()}`}
               {confirmDeleteId === _id ? (
                 <>
                   <button onClick={() => handleConfirmDelete(_id)}>
