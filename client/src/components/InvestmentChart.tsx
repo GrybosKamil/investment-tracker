@@ -23,7 +23,6 @@ export function InvestmentChart({
     useState<InvestmentType[]>(investmentTypes);
 
   useEffect(() => {
-    console.log({ investmentTypes });
     setSelectedTypes(investmentTypes);
   }, [investmentTypes]);
 
@@ -53,21 +52,29 @@ export function InvestmentChart({
 
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
-          data={investments.sort(
-            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
-          )}
+          data={investments.sort((a, b) => {
+            return a.date.getTime() - b.date.getTime();
+          })}
         >
           <CartesianGrid strokeDasharray="10 10" />
-          <XAxis dataKey="date" />
-          <YAxis dataKey="value" />
+          <XAxis
+            dataKey={(investment: Investment) =>
+              investment.date.toISOString().slice(0, 10)
+            }
+            angle={-60}
+            textAnchor="end"
+            tickMargin={10}
+            height={100}
+          />
+          <YAxis dataKey={(investment: Investment) => investment.value} />
 
           <Tooltip
             labelFormatter={(label) => {
               return <span style={{ color: "black" }}>{label}</span>;
             }}
           />
-
           <Legend />
+          {/* <Legend layout="horizontal" verticalAlign="top" align="center" /> */}
 
           {investmentTypes
             .filter((type) => selectedTypes.includes(type))
@@ -75,13 +82,14 @@ export function InvestmentChart({
               <Line
                 key={type._id}
                 type="monotone"
-                dataKey="value"
+                dataKey={(investment: Investment) => investment.value}
                 data={investments.filter(
                   (investment) => investment.type === type._id
                 )}
                 name={type.name}
-                stroke={["#8884d8", "#82ca9d", "#ffc658", "#ff7300"][index]}
-                activeDot={{ r: 8 }}
+                strokeWidth={2} 
+                stroke={["#8884d8", "#82ca9d", "#ffc658", "#ff7300"][index % 4]}
+                activeDot={{ r: 9 }}
               />
             ))}
         </LineChart>

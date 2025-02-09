@@ -9,7 +9,7 @@ export type Investment = {
   _id: string;
   type: string;
   value: number;
-  date: string;
+  date: Date;
 };
 
 export function Investments() {
@@ -18,7 +18,10 @@ export function Investments() {
     queryKey: ["investments"],
     queryFn: async (): Promise<Investment[]> => {
       const { data } = await axiosInstance.get<Investment[]>("/api/investment");
-      return data;
+      return data.map((investment) => ({
+        ...investment,
+        date: new Date(investment.date),
+      }));
     },
   });
 
@@ -70,7 +73,7 @@ export function Investments() {
       <ul>
         {data.map(({ _id, type, value, date }: Investment) => (
           <li key={_id}>
-            {getInvestmentTypeName(type)}: {value} on {date}
+            {getInvestmentTypeName(type)}: {value} on {date.toISOString()}
             {confirmDeleteId === _id ? (
               <>
                 <button onClick={() => handleConfirmDelete(_id)}>
