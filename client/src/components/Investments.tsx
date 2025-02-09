@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ImportInvestments } from "./ImportInvestments";
+import { ExportInvestments } from "./ExportInvestments";
 import { InvestmentChart } from "./InvestmentChart";
 import { InvestmentTypes } from "./InvestmentTypes";
 import { NewInvestment } from "./NewInvestment";
@@ -62,6 +63,9 @@ export function Investments() {
 
       <h2>Import Investments</h2>
       <ImportInvestments />
+
+      <h2>Export Investments</h2>
+      <ExportInvestments />
 
       <h2>Investment List</h2>
       <button onClick={() => setShowList(!showList)}>

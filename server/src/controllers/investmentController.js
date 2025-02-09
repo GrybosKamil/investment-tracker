@@ -115,6 +115,40 @@ export const importInvestments = async (req, res) => {
   }
 };
 
+export const exportInvestments = async (req, res) => {
+  try {
+    const investments = await Investment.find().sort({ date: 1 });
+    const investmentTypes = await InvestmentType.find();
+
+    const data = investments.map((investment) => {
+      const investmentType = investmentTypes.find((type) =>
+        type._id.equals(investment.type)
+      );
+      return {
+        date: investment.date.toISOString().split("T")[0],
+        [investmentType.name]: investment.value,
+      };
+    });
+
+    const csvData = [
+      ["date", ...investmentTypes.map((type) => type.name)],
+      ...data.map((row) => [
+        row.date,
+        ...investmentTypes.map((type) => row[type.name] || ""),
+      ]),
+    ];
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=investments.csv"
+    );
+    res.send(csvData.map((row) => row.join(",")).join("\n"));
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const prepareUpdates = async (results) => {
   const updates = [];
   const investmentTypes = await InvestmentType.find({});
