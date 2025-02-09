@@ -120,19 +120,26 @@ export const exportInvestments = async (req, res) => {
     const investments = await Investment.find().sort({ date: 1 });
     const investmentTypes = await InvestmentType.find();
 
-    const data = investments.map((investment) => {
-      const investmentType = investmentTypes.find((type) =>
-        type._id.equals(investment.type)
-      );
-      return {
-        date: investment.date.toISOString().split("T")[0],
-        [investmentType.name]: investment.value,
-      };
-    });
+    const investmentTypeMap = investmentTypes.reduce((map, type) => {
+      map[type._id] = type.name;
+      return map;
+    }, {});
+
+    const data = investments.reduce((acc, investment) => {
+      const date = investment.date.toISOString().split("T")[0];
+      const investmentType = investmentTypeMap[investment.type];
+
+      if (!acc[date]) {
+        acc[date] = { date };
+      }
+
+      acc[date][investmentType] = investment.value;
+      return acc;
+    }, {});
 
     const csvData = [
       ["date", ...investmentTypes.map((type) => type.name)],
-      ...data.map((row) => [
+      ...Object.values(data).map((row) => [
         row.date,
         ...investmentTypes.map((type) => row[type.name] || ""),
       ]),
