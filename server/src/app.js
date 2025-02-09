@@ -8,12 +8,8 @@ import { apiRoutes } from "./routes/apiRoutes.js";
 
 dotenv.config();
 
-const app = express();
-const port = process.env.PORT || 3000;
-const mongoURI = process.env.MONGODB_URI;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const app = express();
 
 app.use(
   cors({
@@ -22,13 +18,18 @@ app.use(
   })
 );
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../../client/dist")));
 app.use("/api", apiRoutes);
-
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
 });
+
+const port = process.env.PORT || 3000;
+const mongoURI = process.env.MONGODB_URI;
 
 const startServer = async () => {
   try {
