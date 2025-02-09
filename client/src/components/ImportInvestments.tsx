@@ -28,7 +28,7 @@ export function ImportInvestments() {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
+        },
       );
       console.log("File uploaded successfully", response.data);
 

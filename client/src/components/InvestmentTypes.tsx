@@ -21,7 +21,7 @@ export function InvestmentTypes({
     const investments = queryClient.getQueryData<Investment[]>(["investments"]);
     if (investments) {
       const count = investments.filter(
-        (investment: Investment) => investment.type === id
+        (investment: Investment) => investment.type === id,
       ).length;
       setRelatedInvestmentsCount(count);
     }

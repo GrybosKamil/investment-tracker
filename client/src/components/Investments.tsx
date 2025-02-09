@@ -29,10 +29,10 @@ export function Investments() {
 
   function getInvestmentTypeName(
     investmentTypes: InvestmentType[],
-    typeId: string
+    typeId: string,
   ): string {
     const type = investmentTypes?.find(
-      (type: InvestmentType) => type._id === typeId
+      (type: InvestmentType) => type._id === typeId,
     );
     return type ? type.name : "Unknown";
   }

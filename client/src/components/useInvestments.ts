@@ -30,7 +30,7 @@ export function useInvestments(): InvestmentsProps {
         queryKey: ["investment-types"],
         queryFn: async (): Promise<InvestmentType[]> => {
           const { data } = await axiosInstance.get<InvestmentType[]>(
-            "/api/investment-type"
+            "/api/investment-type",
           );
           return data;
         },

@@ -29,7 +29,7 @@ export function InvestmentChart({
     setSelectedTypes((prevSelectedTypes) =>
       prevSelectedTypes.includes(type)
         ? prevSelectedTypes.filter((el) => el !== type)
-        : [...prevSelectedTypes, type]
+        : [...prevSelectedTypes, type],
     );
   };
 
