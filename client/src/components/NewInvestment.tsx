@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { Investment, InvestmentType } from "./types";
 import { useMutateInvestments } from "./useInvestments";
@@ -20,6 +20,7 @@ export function NewInvestment({
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<Omit<Investment, "_id">>({
     resolver: zodResolver(newInvestmentSchema),
@@ -31,8 +32,11 @@ export function NewInvestment({
     },
   });
 
-  const onSubmit = (data: Omit<Investment, "_id">) => {
+  const onSubmit: SubmitHandler<Omit<Investment, "_id">> = (
+    data: Omit<Investment, "_id">,
+  ) => {
     createMutation.mutate(data);
+    reset();
   };
 
   return (

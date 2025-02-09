@@ -1,11 +1,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import axiosInstance from "../axiosConfig";
-import { InvestmentType } from "./InvestmentTypes";
-
-type NewType = Omit<InvestmentType, "_id">;
+import { InvestmentType } from "./types";
+import { useMutateInvestments } from "./useInvestments";
 
 const Schema = z.object({
   name: z
@@ -20,24 +17,19 @@ export function NewInvestmentType() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<NewType>({
+  } = useForm<Omit<InvestmentType, "_id">>({
     resolver: zodResolver(Schema),
     defaultValues: { name: "" },
     mode: "onBlur",
   });
-  const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: (newInvestmentType: NewType) =>
-      axiosInstance.post("/api/investment-type", newInvestmentType),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["investment-types"] });
-      reset();
-    },
-  });
+  const { createTypeMutation } = useMutateInvestments();
 
-  const onSubmit: SubmitHandler<NewType> = (data) => {
-    mutation.mutate(data);
+  const onSubmit: SubmitHandler<Omit<InvestmentType, "_id">> = (
+    data: Omit<InvestmentType, "_id">,
+  ) => {
+    createTypeMutation.mutate(data);
+    reset();
   };
 
   return (

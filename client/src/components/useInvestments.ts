@@ -69,6 +69,14 @@ export function useMutateInvestments() {
     },
   });
 
+  const createTypeMutation = useMutation({
+    mutationFn: (newInvestmentType: Omit<InvestmentType, "_id">) =>
+      axiosInstance.post("/api/investment-type", newInvestmentType),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["investment-types"] });
+    },
+  });
+
   const deleteTypeMutation = useMutation({
     mutationFn: (id: string) =>
       axiosInstance.delete(`/api/investment-type/${id}`),
@@ -81,6 +89,7 @@ export function useMutateInvestments() {
   return {
     createMutation,
     deleteMutation,
+    createTypeMutation,
     deleteTypeMutation,
   };
 }
