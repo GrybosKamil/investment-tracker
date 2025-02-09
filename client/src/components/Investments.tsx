@@ -3,7 +3,7 @@ import { useState } from "react";
 import axiosInstance from "../axiosConfig";
 import { NewInvestment } from "./NewInvestment";
 import { InvestmentType } from "./InvestmentTypes";
-import { InvestmentChart } from "./InvestmentChart";
+import { InvestmentChart } from "./InvestmentChartOther";
 
 export type Investment = {
   _id: string;
@@ -14,6 +14,10 @@ export type Investment = {
 
 export function Investments() {
   const queryClient = useQueryClient();
+
+  const [showList, setShowList] = useState<boolean>(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
   const { data, error, isLoading } = useQuery<Investment[], Error>({
     queryKey: ["investments"],
     queryFn: async (): Promise<Investment[]> => {
@@ -31,8 +35,6 @@ export function Investments() {
       await queryClient.invalidateQueries({ queryKey: ["investments"] });
     },
   });
-
-  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
 
   const handleDeleteClick = (id: string) => {
     setConfirmDeleteId(id);
@@ -70,23 +72,28 @@ export function Investments() {
       <h2>Investments</h2>
       <NewInvestment />
       <InvestmentChart investments={data} investmentTypes={investmentTypes} />
-      <ul>
-        {data.map(({ _id, type, value, date }: Investment) => (
-          <li key={_id}>
-            {getInvestmentTypeName(type)}: {value} on {date.toISOString()}
-            {confirmDeleteId === _id ? (
-              <>
-                <button onClick={() => handleConfirmDelete(_id)}>
-                  Confirm
-                </button>
-                <button onClick={handleCancelDelete}>Cancel</button>
-              </>
-            ) : (
-              <button onClick={() => handleDeleteClick(_id)}>Delete</button>
-            )}
-          </li>
-        ))}
-      </ul>
+      <button onClick={() => setShowList(!showList)}>
+        {showList ? "Hide Investments" : "Show Investments"}
+      </button>
+      {showList && (
+        <ul>
+          {data.map(({ _id, type, value, date }: Investment) => (
+            <li key={_id}>
+              {getInvestmentTypeName(type)}: {value} on {date.toISOString()}
+              {confirmDeleteId === _id ? (
+                <>
+                  <button onClick={() => handleConfirmDelete(_id)}>
+                    Confirm
+                  </button>
+                  <button onClick={handleCancelDelete}>Cancel</button>
+                </>
+              ) : (
+                <button onClick={() => handleDeleteClick(_id)}>Delete</button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
