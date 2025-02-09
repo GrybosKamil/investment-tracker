@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   CartesianGrid,
   Legend,
@@ -34,6 +34,8 @@ export function InvestmentChart({
     );
   };
 
+  const chartData = useMemo(() => prepareChartData(investments), [investments]);
+
   return (
     <div>
       <div>
@@ -52,21 +54,23 @@ export function InvestmentChart({
 
       <ResponsiveContainer width="100%" height={400}>
         <LineChart
-          data={investments.sort((a, b) => {
-            return a.date.getTime() - b.date.getTime();
+          data={chartData.sort((a, b) => {
+            return a.date - b.date;
           })}
         >
           <CartesianGrid strokeDasharray="10 10" />
+
+          <YAxis />
+
           <XAxis
-            dataKey={(investment: Investment) =>
-              investment.date.toISOString().slice(0, 10)
+            dataKey={(element: ChartDataElement) =>
+              new Date(element.date).toISOString().slice(0, 10)
             }
             angle={-60}
             textAnchor="end"
             tickMargin={10}
             height={100}
           />
-          <YAxis dataKey={(investment: Investment) => investment.value} />
 
           <Tooltip
             labelFormatter={(label) => {
@@ -74,7 +78,6 @@ export function InvestmentChart({
             }}
           />
           <Legend />
-          {/* <Legend layout="horizontal" verticalAlign="top" align="center" /> */}
 
           {investmentTypes
             .filter((type) => selectedTypes.includes(type))
@@ -82,12 +85,9 @@ export function InvestmentChart({
               <Line
                 key={type._id}
                 type="monotone"
-                dataKey={(investment: Investment) => investment.value}
-                data={investments.filter(
-                  (investment) => investment.type === type._id
-                )}
+                dataKey={type._id}
                 name={type.name}
-                strokeWidth={2} 
+                strokeWidth={2}
                 stroke={["#8884d8", "#82ca9d", "#ffc658", "#ff7300"][index % 4]}
                 activeDot={{ r: 9 }}
               />
@@ -96,4 +96,30 @@ export function InvestmentChart({
       </ResponsiveContainer>
     </div>
   );
+}
+
+type ChartDataElement = {
+  date: number;
+  [type: string]: number;
+};
+
+function prepareChartData(investments: Investment[]): ChartDataElement[] {
+  const result: {
+    [key: number]: ChartDataElement;
+  } = {};
+  
+  investments.forEach((investment) => {
+    const date = investment.date.getTime();
+    if (!result[date]) {
+      result[date] = {
+        date,
+        [investment.type]: investment.value,
+      };
+    } else {
+      const previous = result[date];
+      result[date] = { ...previous, [investment.type]: investment.value };
+    }
+  });
+
+  return Object.values(result);
 }

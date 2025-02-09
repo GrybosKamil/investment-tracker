@@ -3,7 +3,7 @@ import { useState } from "react";
 import axiosInstance from "../axiosConfig";
 import { NewInvestment } from "./NewInvestment";
 import { InvestmentType } from "./InvestmentTypes";
-import { InvestmentChart } from "./InvestmentChartOther";
+import { InvestmentChart } from "./InvestmentChart";
 
 export type Investment = {
   _id: string;
