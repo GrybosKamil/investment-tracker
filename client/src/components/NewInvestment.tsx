@@ -24,12 +24,12 @@ export function NewInvestment({
     formState: { errors },
   } = useForm<Omit<Investment, "_id">>({
     resolver: zodResolver(newInvestmentSchema),
-    mode: "onBlur",
     defaultValues: {
       type: "",
       date: new Date(),
       value: 0,
     },
+    mode: "onBlur",
   });
 
   const onSubmit: SubmitHandler<Omit<Investment, "_id">> = (
