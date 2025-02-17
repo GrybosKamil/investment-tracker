@@ -1,4 +1,5 @@
 import { saveAs } from "file-saver";
+import { Button } from "primereact/button";
 import axiosInstance from "../axiosConfig";
 
 export function ExportInvestments() {
@@ -17,7 +18,7 @@ export function ExportInvestments() {
 
   return (
     <div>
-      <button onClick={handleDownload}>Download</button>
+      <Button label="Download" onClick={handleDownload} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
+import { Button } from "primereact/button";
 import { useState } from "react";
-import { ImportInvestments } from "./ImportInvestments";
 import { ExportInvestments } from "./ExportInvestments";
+import { ImportInvestments } from "./ImportInvestments";
 import { InvestmentChart } from "./InvestmentChart";
 import { InvestmentTypes } from "./InvestmentTypes";
 import { NewInvestment } from "./NewInvestment";
@@ -68,24 +69,24 @@ export function Investments() {
       <ExportInvestments />
 
       <h2>Investment List</h2>
-      <button onClick={() => setShowList(!showList)}>
-        {showList ? "Hide Investments" : "Show Investments"}
-      </button>
-
+      {showList? 
+        <Button onClick={() => setShowList(false)} label="Hide Investments" /> : 
+        <Button onClick={() => setShowList(true)} label="Show Investments" />
+      }
+    
       {showList && (
         <ul>
           {investments.map(({ _id, type, value, date }: Investment) => (
             <li key={_id}>
               {`${getInvestmentTypeName(investmentTypes, type)}: ${value} on ${date.toISOString()}`}
+            
               {confirmDeleteId === _id ? (
                 <>
-                  <button onClick={() => handleConfirmDelete(_id)}>
-                    Confirm
-                  </button>
-                  <button onClick={handleCancelDelete}>Cancel</button>
+                  <Button onClick={() => handleConfirmDelete(_id)} label="Confirm" severity="danger"/>
+                  <Button onClick={handleCancelDelete} label="Cancel" severity="secondary"/>
                 </>
               ) : (
-                <button onClick={() => handleDeleteClick(_id)}>Delete</button>
+                <Button onClick={() => handleDeleteClick(_id)} label="Delete" severity="danger"/>
               )}
             </li>
           ))}

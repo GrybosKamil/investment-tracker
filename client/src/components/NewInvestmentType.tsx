@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "primereact/button";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import { InvestmentType } from "./types";
@@ -39,9 +40,7 @@ export function NewInvestmentType() {
         <input {...register("name")} />
         {errors.name && <span>{errors.name.message}</span>}
       </label>
-      <button type="submit" disabled={Object.keys(errors).length > 0}>
-        Add InvestmentType
-      </button>
+      <Button type="submit" disabled={Object.keys(errors).length > 0} label="Add InvestmentType" />
     </form>
   );
 }
