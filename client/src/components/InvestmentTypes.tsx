@@ -4,6 +4,8 @@ import { useState } from "react";
 import { NewInvestmentType } from "./NewInvestmentType";
 import { Investment, InvestmentType } from "./types";
 import { useMutateInvestments } from "./useInvestments";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 
 export function InvestmentTypes({
   investmentTypes,
@@ -38,40 +40,38 @@ export function InvestmentTypes({
     setConfirmDeleteId(null);
   };
 
+  const actionBodyTemplate = (rowData: InvestmentType) => {
+    return confirmDeleteId === rowData._id ? (
+      <>
+        <span>({relatedInvestmentsCount} investments will be deleted)</span>
+        <Button
+          label="Confirm"
+          onClick={() => handleConfirmDelete(rowData._id)}
+          severity="danger"
+        />
+        <Button
+          label="Cancel"
+          onClick={handleCancelDelete}
+          severity="secondary"
+        />
+      </>
+    ) : (
+      <Button
+        label="Delete"
+        onClick={() => handleDeleteClick(rowData._id)}
+        severity="danger"
+      />
+    );
+  };
+
   return (
     <div>
       <h2>Investment Types</h2>
       <NewInvestmentType />
-      <ul>
-        {investmentTypes.map(({ _id, name }: InvestmentType) => (
-          <li key={_id}>
-            {name}
-            {confirmDeleteId === _id ? (
-              <>
-                <span>
-                  ({relatedInvestmentsCount} investments will be deleted)
-                </span>
-                <Button
-                  label="Confirm"
-                  onClick={() => handleConfirmDelete(_id)}
-                  severity="danger"
-                />
-                <Button
-                  label="Cancel"
-                  onClick={handleCancelDelete}
-                  severity="secondary"
-                />
-              </>
-            ) : (
-              <Button
-                label="Delete"
-                onClick={() => handleDeleteClick(_id)}
-                severity="danger"
-              />
-            )}
-          </li>
-        ))}
-      </ul>
+      <DataTable value={investmentTypes}>
+        <Column field="name" header="Name" />
+        <Column body={actionBodyTemplate} header="Actions" />
+      </DataTable>
     </div>
   );
 }
