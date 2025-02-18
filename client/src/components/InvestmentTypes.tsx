@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Button } from 'primereact/button';
+import { Button } from "primereact/button";
 import { useState } from "react";
 import { NewInvestmentType } from "./NewInvestmentType";
 import { Investment, InvestmentType } from "./types";
@@ -51,11 +51,23 @@ export function InvestmentTypes({
                 <span>
                   ({relatedInvestmentsCount} investments will be deleted)
                 </span>
-                <Button label="Confirm" onClick={() => handleConfirmDelete(_id)}  severity="danger"/>
-                <Button label="Cancel" onClick={handleCancelDelete} severity="secondary"/>
+                <Button
+                  label="Confirm"
+                  onClick={() => handleConfirmDelete(_id)}
+                  severity="danger"
+                />
+                <Button
+                  label="Cancel"
+                  onClick={handleCancelDelete}
+                  severity="secondary"
+                />
               </>
             ) : (
-              <Button label="Delete" onClick={() => handleDeleteClick(_id)} severity="danger" />
+              <Button
+                label="Delete"
+                onClick={() => handleDeleteClick(_id)}
+                severity="danger"
+              />
             )}
           </li>
         ))}

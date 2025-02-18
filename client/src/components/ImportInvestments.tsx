@@ -7,7 +7,7 @@ import axiosInstance from "../axiosConfig";
 export function ImportInvestments() {
   const [file, setFile] = useState<File | null>(null);
 
-  const fileUploadRef = useRef<FileUpload|null>(null);
+  const fileUploadRef = useRef<FileUpload | null>(null);
   const queryClient = useQueryClient();
 
   const handleFileChange = (event: FileUploadSelectEvent) => {
@@ -16,7 +16,7 @@ export function ImportInvestments() {
 
   const handleClear = () => {
     fileUploadRef.current?.clear();
-  }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -53,9 +53,16 @@ export function ImportInvestments() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <FileUpload ref={fileUploadRef} mode="basic" accept=".csv" onSelect={handleFileChange} />
+        <FileUpload
+          ref={fileUploadRef}
+          mode="basic"
+          accept=".csv"
+          onSelect={handleFileChange}
+        />
         <Button label="Upload" type="submit" />
-        {file? <Button label="Clear" onClick={handleClear} severity="secondary" /> : null}
+        {file ? (
+          <Button label="Clear" onClick={handleClear} severity="secondary" />
+        ) : null}
       </form>
     </div>
   );

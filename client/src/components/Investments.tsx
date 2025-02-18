@@ -31,10 +31,10 @@ export function Investments() {
 
   function getInvestmentTypeName(
     investmentTypes: InvestmentType[],
-    typeId: string
+    typeId: string,
   ): string {
     const type = investmentTypes?.find(
-      (type: InvestmentType) => type._id === typeId
+      (type: InvestmentType) => type._id === typeId,
     );
     return type ? type.name : "Unknown";
   }
@@ -69,24 +69,37 @@ export function Investments() {
       <ExportInvestments />
 
       <h2>Investment List</h2>
-      {showList? 
-        <Button onClick={() => setShowList(false)} label="Hide Investments" /> : 
+      {showList ? (
+        <Button onClick={() => setShowList(false)} label="Hide Investments" />
+      ) : (
         <Button onClick={() => setShowList(true)} label="Show Investments" />
-      }
-    
+      )}
+
       {showList && (
         <ul>
           {investments.map(({ _id, type, value, date }: Investment) => (
             <li key={_id}>
               {`${getInvestmentTypeName(investmentTypes, type)}: ${value} on ${date.toISOString()}`}
-            
+
               {confirmDeleteId === _id ? (
                 <>
-                  <Button onClick={() => handleConfirmDelete(_id)} label="Confirm" severity="danger"/>
-                  <Button onClick={handleCancelDelete} label="Cancel" severity="secondary"/>
+                  <Button
+                    onClick={() => handleConfirmDelete(_id)}
+                    label="Confirm"
+                    severity="danger"
+                  />
+                  <Button
+                    onClick={handleCancelDelete}
+                    label="Cancel"
+                    severity="secondary"
+                  />
                 </>
               ) : (
-                <Button onClick={() => handleDeleteClick(_id)} label="Delete" severity="danger"/>
+                <Button
+                  onClick={() => handleDeleteClick(_id)}
+                  label="Delete"
+                  severity="danger"
+                />
               )}
             </li>
           ))}
