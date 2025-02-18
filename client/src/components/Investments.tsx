@@ -1,5 +1,7 @@
 import { Button } from "primereact/button";
 import { Panel } from "primereact/panel";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
 import { useState } from "react";
 import { ExportInvestments } from "./ExportInvestments";
 import { ImportInvestments } from "./ImportInvestments";
@@ -63,6 +65,14 @@ export function Investments() {
     return acc;
   }, {} as Record<string, Record<string, Investment[]>>);
 
+  const investmentList = Object.entries(groupedInvestments).map(([date, investmentsByType]) => ({
+    date,
+    ...investmentTypes.reduce((acc, type) => {
+      acc[type._id] = investmentsByType[type._id] || [];
+      return acc;
+    }, {} as Record<string, Investment[]>)
+  }));
+
   return (
     <div>
       <InvestmentChart
@@ -89,66 +99,56 @@ export function Investments() {
       )}
 
       {showList && (
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              {investmentTypes.map((type) => (
-                <th key={type._id}>{type.name}</th>
-              ))}
-            </tr>
-          </thead>
-
-          <tbody>
-            {Object.entries(groupedInvestments).map(([date, investmentsByType]) => (
-              <tr key={date}>
-                <td>{date}</td>
-                {investmentTypes.map((type) => (
-                  <td key={type._id}>
-                    <>
-                      {(investmentsByType[type._id] || []).map(({ _id, value }) => (
-                        <>
-                          <span
-                            onClick={() => handleInvestmentClick(_id)}
-                            style={{ marginLeft: '0.5rem', cursor: 'pointer' }}
-                          >
-                            {value}
-                          </span>
-                          {selectedInvestmentId === _id && (
-                            <Panel header="Investment Details">
-                              <div>
-                                {confirmDeleteId === _id ? (
-                                  <>
-                                    <Button
-                                      onClick={() => handleConfirmDelete(_id)}
-                                      label="Confirm"
-                                      severity="danger"
-                                    />
-                                    <Button
-                                      onClick={handleCancelDelete}
-                                      label="Cancel"
-                                      severity="secondary"
-                                    />
-                                  </>
-                                ) : (
-                                  <Button
-                                    onClick={() => handleDeleteClick(_id)}
-                                    label="Delete"
-                                    severity="danger"
-                                  />
-                                )}
-                              </div>
-                            </Panel>
-                          )}
-                        </>
-                      ))}
-                    </>
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <DataTable value={investmentList}>
+          <Column field="date" header="Date" />
+          {investmentTypes.map((type:InvestmentType) => (
+            <Column
+              key={type._id}
+              field={type._id}
+              header={type.name}
+              body={(rowData:Record<string, Investment[]>) => (
+                <>
+                  {rowData[type._id].map(({ _id, value }:Investment) => (
+                    <div key={_id}>
+                      <span
+                        onClick={() => handleInvestmentClick(_id)}
+                        style={{ marginLeft: '0.5rem', cursor: 'pointer' }}
+                      >
+                        {value}
+                      </span>
+                      {selectedInvestmentId === _id && (
+                        <Panel header="Investment Details">
+                          <div>
+                            {confirmDeleteId === _id ? (
+                              <>
+                                <Button
+                                  onClick={() => handleConfirmDelete(_id)}
+                                  label="Confirm"
+                                  severity="danger"
+                                />
+                                <Button
+                                  onClick={handleCancelDelete}
+                                  label="Cancel"
+                                  severity="secondary"
+                                />
+                              </>
+                            ) : (
+                              <Button
+                                onClick={() => handleDeleteClick(_id)}
+                                label="Delete"
+                                severity="danger"
+                              />
+                            )}
+                          </div>
+                        </Panel>
+                      )}
+                    </div>
+                  ))}
+                </>
+              )}
+            />
+          ))}
+        </DataTable>
       )}
     </div>
   );
