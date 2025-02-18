@@ -50,6 +50,15 @@ export function Investments() {
   const investments: Investment[] = data.investments;
   const investmentTypes: InvestmentType[] = data.investmentTypes;
 
+  const groupedInvestments = investments.reduce((acc, investment) => {
+    const date = investment.date.toISOString().split('T')[0];
+    if (!acc[date]) {
+      acc[date] = [];
+    }
+    acc[date].push(investment);
+    return acc;
+  }, {} as Record<string, Investment[]>);
+
   return (
     <div>
       <InvestmentChart
@@ -76,34 +85,57 @@ export function Investments() {
       )}
 
       {showList && (
-        <ul>
-          {investments.map(({ _id, type, value, date }: Investment) => (
-            <li key={_id}>
-              {`${getInvestmentTypeName(investmentTypes, type)}: ${value} on ${date.toISOString()}`}
-
-              {confirmDeleteId === _id ? (
-                <>
-                  <Button
-                    onClick={() => handleConfirmDelete(_id)}
-                    label="Confirm"
-                    severity="danger"
-                  />
-                  <Button
-                    onClick={handleCancelDelete}
-                    label="Cancel"
-                    severity="secondary"
-                  />
-                </>
-              ) : (
-                <Button
-                  onClick={() => handleDeleteClick(_id)}
-                  label="Delete"
-                  severity="danger"
-                />
-              )}
-            </li>
-          ))}
-        </ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Investments</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.entries(groupedInvestments).map(([date, investments]) => (
+              <tr key={date}>
+                <td>{date}</td>
+                <td>
+                  <ul>
+                    {investments.map(({ _id, type, value }) => (
+                      <li key={_id}>
+                        {`${getInvestmentTypeName(investmentTypes, type)}: ${value}`}
+                      </li>
+                    ))}
+                  </ul>
+                </td>
+                <td>
+                  {investments.map(({ _id }) => (
+                    <div key={_id}>
+                      {confirmDeleteId === _id ? (
+                        <>
+                          <Button
+                            onClick={() => handleConfirmDelete(_id)}
+                            label="Confirm"
+                            severity="danger"
+                          />
+                          <Button
+                            onClick={handleCancelDelete}
+                            label="Cancel"
+                            severity="secondary"
+                          />
+                        </>
+                      ) : (
+                        <Button
+                          onClick={() => handleDeleteClick(_id)}
+                          label="Delete"
+                          severity="danger"
+                        />
+                      )}
+                    </div>
+                  ))}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
