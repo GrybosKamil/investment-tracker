@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "primereact/button";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { InputText } from "primereact/inputtext";
+import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { InvestmentType } from "./types";
 import { useMutateInvestments } from "./useInvestments";
@@ -14,7 +15,7 @@ const Schema = z.object({
 
 export function NewInvestmentType() {
   const {
-    register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
@@ -37,10 +38,24 @@ export function NewInvestmentType() {
     <form onSubmit={handleSubmit(onSubmit)}>
       <label>
         Investment Type Name:
-        <input {...register("name")} />
-        {errors.name && <span>{errors.name.message}</span>}
+        <Controller
+          name="name"
+          control={control}
+          render={({ field, fieldState }) => (
+            <>
+              <InputText {...field} invalid={!!fieldState.error} />
+              {fieldState.error ? (
+                <span>{fieldState.error.message}</span>
+              ) : null}
+            </>
+          )}
+        />
       </label>
-      <Button type="submit" disabled={Object.keys(errors).length > 0} label="Add InvestmentType" />
+      <Button
+        type="submit"
+        disabled={Object.keys(errors).length > 0}
+        label="Add InvestmentType"
+      />
     </form>
   );
 }
