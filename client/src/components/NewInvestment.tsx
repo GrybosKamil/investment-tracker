@@ -114,7 +114,6 @@ export function NewInvestment({
             </>
           )}
         />
-        {errors.value && <p>{errors.value.message}</p>}
       </div>
 
       <Button
