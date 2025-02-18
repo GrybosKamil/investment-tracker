@@ -1,4 +1,5 @@
 import { Button } from "primereact/button";
+import { Panel } from "primereact/panel";
 import { useState } from "react";
 import { ExportInvestments } from "./ExportInvestments";
 import { ImportInvestments } from "./ImportInvestments";
@@ -11,6 +12,7 @@ import { useInvestments, useMutateInvestments } from "./useInvestments";
 export function Investments() {
   const [showList, setShowList] = useState<boolean>(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [selectedInvestmentId, setSelectedInvestmentId] = useState<string | null>(null); // State for selected investment
 
   const { deleteMutation } = useMutateInvestments();
 
@@ -27,17 +29,16 @@ export function Investments() {
   const handleConfirmDelete = (id: string) => {
     deleteMutation.mutate(id);
     setConfirmDeleteId(null);
+    setSelectedInvestmentId(null); 
   };
 
-  function getInvestmentTypeName(
-    investmentTypes: InvestmentType[],
-    typeId: string,
-  ): string {
-    const type = investmentTypes?.find(
-      (type: InvestmentType) => type._id === typeId,
-    );
-    return type ? type.name : "Unknown";
-  }
+  const handleInvestmentClick = (id: string) => {
+    if (selectedInvestmentId !== id) {
+      setSelectedInvestmentId(id);
+    } else {
+      setSelectedInvestmentId(null); 
+    }
+  };
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -53,11 +54,14 @@ export function Investments() {
   const groupedInvestments = investments.reduce((acc, investment) => {
     const date = investment.date.toISOString().split('T')[0];
     if (!acc[date]) {
-      acc[date] = [];
+      acc[date] = {};
     }
-    acc[date].push(investment);
+    if (!acc[date][investment.type]) {
+      acc[date][investment.type] = [];
+    }
+    acc[date][investment.type].push(investment);
     return acc;
-  }, {} as Record<string, Investment[]>);
+  }, {} as Record<string, Record<string, Investment[]>>);
 
   return (
     <div>
@@ -89,49 +93,58 @@ export function Investments() {
           <thead>
             <tr>
               <th>Date</th>
-              <th>Investments</th>
-              <th>Actions</th>
+              {investmentTypes.map((type) => (
+                <th key={type._id}>{type.name}</th>
+              ))}
             </tr>
           </thead>
+
           <tbody>
-            {Object.entries(groupedInvestments).map(([date, investments]) => (
+            {Object.entries(groupedInvestments).map(([date, investmentsByType]) => (
               <tr key={date}>
                 <td>{date}</td>
-                <td>
-                  <ul>
-                    {investments.map(({ _id, type, value }) => (
-                      <li key={_id}>
-                        {`${getInvestmentTypeName(investmentTypes, type)}: ${value}`}
-                      </li>
-                    ))}
-                  </ul>
-                </td>
-                <td>
-                  {investments.map(({ _id }) => (
-                    <div key={_id}>
-                      {confirmDeleteId === _id ? (
+                {investmentTypes.map((type) => (
+                  <td key={type._id}>
+                    <>
+                      {(investmentsByType[type._id] || []).map(({ _id, value }) => (
                         <>
-                          <Button
-                            onClick={() => handleConfirmDelete(_id)}
-                            label="Confirm"
-                            severity="danger"
-                          />
-                          <Button
-                            onClick={handleCancelDelete}
-                            label="Cancel"
-                            severity="secondary"
-                          />
+                          <span
+                            onClick={() => handleInvestmentClick(_id)}
+                            style={{ marginLeft: '0.5rem', cursor: 'pointer' }}
+                          >
+                            {value}
+                          </span>
+                          {selectedInvestmentId === _id && (
+                            <Panel header="Investment Details">
+                              <div>
+                                {confirmDeleteId === _id ? (
+                                  <>
+                                    <Button
+                                      onClick={() => handleConfirmDelete(_id)}
+                                      label="Confirm"
+                                      severity="danger"
+                                    />
+                                    <Button
+                                      onClick={handleCancelDelete}
+                                      label="Cancel"
+                                      severity="secondary"
+                                    />
+                                  </>
+                                ) : (
+                                  <Button
+                                    onClick={() => handleDeleteClick(_id)}
+                                    label="Delete"
+                                    severity="danger"
+                                  />
+                                )}
+                              </div>
+                            </Panel>
+                          )}
                         </>
-                      ) : (
-                        <Button
-                          onClick={() => handleDeleteClick(_id)}
-                          label="Delete"
-                          severity="danger"
-                        />
-                      )}
-                    </div>
-                  ))}
-                </td>
+                      ))}
+                    </>
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
