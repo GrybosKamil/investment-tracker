@@ -62,7 +62,11 @@ export function InvestmentTable({
               }
               return acc;
             }, 0);
-            return <span>{sum.toFixed(2)}</span>;
+            return (
+              <span style={{ textAlign: "right", display: "block" }}>
+                {sum.toFixed(2)}
+              </span>
+            );
           }}
         />
 
@@ -82,6 +86,8 @@ export function InvestmentTable({
                           style={{
                             marginLeft: "0.5rem",
                             cursor: "pointer",
+                            textAlign: "right",
+                            display: "block",
                           }}
                         >
                           {value.toFixed(2)}
