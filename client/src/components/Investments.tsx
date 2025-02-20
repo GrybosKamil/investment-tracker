@@ -9,7 +9,7 @@ import { ImportInvestments } from "./ImportInvestments";
 import { InvestmentChart } from "./InvestmentChart";
 import { InvestmentTypes } from "./InvestmentTypes";
 import { NewInvestment } from "./NewInvestment";
-import { Investment, InvestmentType } from "./types";
+import { Investment, InvestmentType } from "./../types";
 import { useInvestments, useMutateInvestments } from "./useInvestments";
 
 export function Investments() {

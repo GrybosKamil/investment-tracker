@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "primereact/button";
 import { useState } from "react";
 import { NewInvestmentType } from "./NewInvestmentType";
-import { Investment, InvestmentType } from "./types";
+import { Investment, InvestmentType } from "./../types";
 import { useMutateInvestments } from "./useInvestments";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";

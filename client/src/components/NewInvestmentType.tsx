@@ -3,7 +3,7 @@ import { Button } from "primereact/button";
 import { InputText } from "primereact/inputtext";
 import { SubmitHandler, useForm, Controller } from "react-hook-form";
 import { z } from "zod";
-import { InvestmentType } from "./types";
+import { InvestmentType } from "./../types";
 import { useMutateInvestments } from "./useInvestments";
 
 const Schema = z.object({

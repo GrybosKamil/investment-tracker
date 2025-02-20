@@ -9,7 +9,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { Investment, InvestmentType } from "./types";
+import { Investment, InvestmentType } from "./../types";
 
 export function InvestmentChart({
   investments,

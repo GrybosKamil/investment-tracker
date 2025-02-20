@@ -5,7 +5,7 @@ import { Dropdown } from "primereact/dropdown";
 import { InputNumber } from "primereact/inputnumber";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import { Investment, InvestmentType } from "./types";
+import { Investment, InvestmentType } from "./../types";
 import { useMutateInvestments } from "./useInvestments";
 
 const newInvestmentSchema = z.object({

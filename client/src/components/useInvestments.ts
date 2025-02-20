@@ -1,5 +1,5 @@
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
-import { Investment, InvestmentType } from "./types";
+import { Investment, InvestmentType } from "./../types";
 
 import axiosInstance from "../axiosConfig";
 
