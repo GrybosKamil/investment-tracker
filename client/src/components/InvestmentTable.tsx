@@ -46,6 +46,26 @@ export function InvestmentTable({
       </div>
       <DataTable value={investmentList}>
         <Column field="date" header="Date" />
+
+        <Column
+          field="sum"
+          header="Sum"
+          body={(rowData: Record<string, Investment[]>) => {
+            const sum = investmentTypes.reduce((acc, type) => {
+              if (visibleColumns[type._id] !== false) {
+                const investments = rowData[type._id] || [];
+                const typeSum = investments.reduce(
+                  (typeAcc, investment) => typeAcc + investment.value,
+                  0
+                );
+                return acc + typeSum;
+              }
+              return acc;
+            }, 0);
+            return <span>{sum.toFixed(2)}</span>;
+          }}
+        />
+
         {investmentTypes.map(
           (type: InvestmentType) =>
             visibleColumns[type._id] !== false && (
@@ -64,7 +84,7 @@ export function InvestmentTable({
                             cursor: "pointer",
                           }}
                         >
-                          {value}
+                          {value.toFixed(2)}
                         </span>
                         {selectedInvestmentId === _id && (
                           <Panel header="Investment Actions">
@@ -97,7 +117,7 @@ export function InvestmentTable({
                   </>
                 )}
               />
-            ),
+            )
         )}
       </DataTable>
     </>
