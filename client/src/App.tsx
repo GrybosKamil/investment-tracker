@@ -3,7 +3,7 @@ import { PrimeReactProvider } from "primereact/api";
 import "primereact/resources/themes/lara-dark-blue/theme.css";
 import "./App.css";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { Investments } from "./components/Investments";
+import { InvestmentsContext } from "./components/InvestmentsContext";
 
 const queryClient = new QueryClient();
 
@@ -14,7 +14,7 @@ export default function App() {
         <PrimeReactProvider>
           <div>
             <h1>Investment Tracker</h1>
-            <Investments />
+            <InvestmentsContext />
           </div>
         </PrimeReactProvider>
       </QueryClientProvider>
