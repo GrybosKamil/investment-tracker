@@ -16,12 +16,14 @@ type Props = {
 
 export function Investments({ investments, investmentTypes }: Props) {
   const [showList, setShowList] = useState<boolean>(false);
+  const [showTypes, setShowTypes] = useState<boolean>(false);
+  
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [selectedInvestmentId, setSelectedInvestmentId] = useState<
     string | null
   >(null);
   const [visibleColumns, setVisibleColumns] = useState<Record<string, boolean>>(
-    {},
+    {}
   );
 
   const { deleteMutation } = useMutateInvestments();
@@ -68,7 +70,7 @@ export function Investments({ investments, investmentTypes }: Props) {
         acc[date][investment.type].push(investment);
         return acc;
       },
-      {} as Record<string, Record<string, Investment[]>>,
+      {} as Record<string, Record<string, Investment[]>>
     );
   }, [investments]);
 
@@ -81,9 +83,9 @@ export function Investments({ investments, investmentTypes }: Props) {
             acc[type._id] = investmentsByType[type._id] || [];
             return acc;
           },
-          {} as Record<string, Investment[]>,
+          {} as Record<string, Investment[]>
         ),
-      }),
+      })
     );
   }, [groupedInvestments, investmentTypes]);
 
@@ -94,7 +96,16 @@ export function Investments({ investments, investmentTypes }: Props) {
         investmentTypes={investmentTypes}
       />
 
-      <InvestmentTypes investmentTypes={investmentTypes} />
+      {showTypes ? (
+        <Button onClick={() => setShowTypes(false)} label="Hide Types" />
+      ) : (
+        <Button onClick={() => setShowTypes(true)} label="Show Types" />
+      )}
+      {showTypes ? (
+        <InvestmentTypes investmentTypes={investmentTypes} />
+      ) : (
+        <></>
+      )}
 
       <h2>Investments</h2>
       <NewInvestment investmentTypes={investmentTypes} />
@@ -112,7 +123,7 @@ export function Investments({ investments, investmentTypes }: Props) {
         <Button onClick={() => setShowList(true)} label="Show Investments" />
       )}
 
-      {showList && (
+      {showList ? (
         <InvestmentTable
           investmentList={investmentList}
           investmentTypes={investmentTypes}
@@ -125,6 +136,8 @@ export function Investments({ investments, investmentTypes }: Props) {
           selectedInvestmentId={selectedInvestmentId}
           confirmDeleteId={confirmDeleteId}
         />
+      ) : (
+        <></>
       )}
     </div>
   );
