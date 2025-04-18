@@ -3,8 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "install": "npm run install:client && npm run install:server",
-    "install:client": "cd client && npm i",
-    "install:server": "cd server && npm i",
+    "install:client": "cd client && npm ci",
+    "install:server": "cd server && npm ci",
     "build": "npm run build:client",
     "build:client": "cd client && npm run build",
     "start": "cd server && npm run start"
