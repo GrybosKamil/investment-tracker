@@ -37,7 +37,7 @@ export function NewInvestment({
   });
 
   const onSubmit: SubmitHandler<Omit<Investment, "_id">> = (
-    data: Omit<Investment, "_id">,
+    data: Omit<Investment, "_id">
   ) => {
     createMutation.mutate(data);
     reset();
@@ -45,6 +45,27 @@ export function NewInvestment({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
+      <div>
+        <label>Date</label>
+        <Controller
+          name="date"
+          control={control}
+          render={({ field, fieldState }) => (
+            <>
+              <Calendar
+                {...field}
+                onChange={(e) => field.onChange(e.value)}
+                showIcon
+                invalid={!!fieldState.error}
+              />
+              {fieldState.error ? (
+                <span>{fieldState.error.message}</span>
+              ) : null}
+            </>
+          )}
+        />
+      </div>
+
       <div>
         <label>Investment Type</label>
         <Controller
@@ -60,27 +81,6 @@ export function NewInvestment({
                   value: type._id,
                 }))}
                 onChange={(e) => field.onChange(e.value)}
-                invalid={!!fieldState.error}
-              />
-              {fieldState.error ? (
-                <span>{fieldState.error.message}</span>
-              ) : null}
-            </>
-          )}
-        />
-      </div>
-
-      <div>
-        <label>Date</label>
-        <Controller
-          name="date"
-          control={control}
-          render={({ field, fieldState }) => (
-            <>
-              <Calendar
-                {...field}
-                onChange={(e) => field.onChange(e.value)}
-                showIcon
                 invalid={!!fieldState.error}
               />
               {fieldState.error ? (
