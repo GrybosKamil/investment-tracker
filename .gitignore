@@ -21,3 +21,6 @@ Thumbs.db
 
 # Prettier cache
 .prettiercache
+
+# Archive files
+*.tar.gz
