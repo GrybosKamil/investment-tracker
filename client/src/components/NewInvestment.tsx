@@ -37,7 +37,7 @@ export function NewInvestment({
   });
 
   const onSubmit: SubmitHandler<Omit<Investment, "_id">> = (
-    data: Omit<Investment, "_id">
+    data: Omit<Investment, "_id">,
   ) => {
     createMutation.mutate(data);
     reset();

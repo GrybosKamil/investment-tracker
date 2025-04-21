@@ -56,7 +56,7 @@ export function InvestmentTable({
                 const investments = rowData[type._id] || [];
                 const typeSum = investments.reduce(
                   (typeAcc, investment) => typeAcc + investment.value,
-                  0
+                  0,
                 );
                 return acc + typeSum;
               }
@@ -123,7 +123,7 @@ export function InvestmentTable({
                   </>
                 )}
               />
-            )
+            ),
         )}
       </DataTable>
     </>
