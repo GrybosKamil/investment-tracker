@@ -23,7 +23,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.static(path.join(__dirname, "../../client/dist")));
 
 app.use("/api", apiRoutes);
-app.get("*", (req, res) => {
+app.get(/^\/(?!api).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "../../client/dist/index.html"));
 });
 
