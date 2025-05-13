@@ -10,7 +10,9 @@ export function ExportInvestments() {
         responseType: "blob",
       });
       const blob = new Blob([response.data], { type: "text/csv" });
-      saveAs(blob, "investments.csv");
+      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const filename = `investments-${timestamp}.csv`;
+      saveAs(blob, filename);
     } catch (error) {
       console.error("Error downloading file", error);
     }
